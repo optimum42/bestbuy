@@ -3,15 +3,15 @@ class Product:
 
     def __init__(self, name, price, quantity):
         if name == "":
-            raise ValueError("Name cannot be empty")
+            raise ValueError(f"{name}: Name cannot be empty")
         self.name = name
 
         if price <= 0:
-            raise ValueError("Price must be greater than 0")
+            raise ValueError(f"{name}: Price must be greater than 0")
         self.price = price
 
         if quantity <= 0:
-            raise ValueError("Quantity must be greater than 0")
+            raise ValueError(f"{name}: Quantity must be greater than 0")
         self.quantity = quantity
 
         self.active = True
@@ -20,6 +20,8 @@ class Product:
         return self.quantity
 
     def set_quantity(self, quantity):
+        if quantity <= 0:
+            raise ValueError(f"{self.name}: Quantity must be greater than 0")
         self.quantity = quantity
 
     def is_active(self):
@@ -35,12 +37,15 @@ class Product:
         print(f"{self.name}, Price: {self.price}, Quantity: {self.quantity}")
 
     def buy(self, quantity):
-        if quantity <= self.quantity:
-            self.quantity -= quantity
-            if self.quantity == 0:
-                self.active = False
-            return quantity * self.price
-        return False
+        if quantity <= 0:
+            raise ValueError(f"{self.name}: Quantity must be greater than 0")
+        if quantity > self.quantity:
+            raise ValueError(f"{self.name}: {quantity} exceeds the maximum quantity of {self.quantity}")
+
+        self.quantity -= quantity
+        if self.quantity == 0:
+            self.active = False
+        return quantity * self.price
 
 
 def main():
