@@ -1,6 +1,9 @@
 
 class Product:
-
+    """
+    The product class that holds the product name, price, and quantity
+    and allows the user to operate on the product
+    """
     def __init__(self, name, price, quantity):
         if name == "":
             raise ValueError(f"{name}: Name cannot be empty")
@@ -19,6 +22,9 @@ class Product:
     def get_quantity(self):
         return self.quantity
 
+    def get_price(self):
+        return self.price
+
     def set_quantity(self, quantity):
         if quantity <= 0:
             raise ValueError(f"{self.name}: Quantity must be greater than 0")
@@ -34,7 +40,7 @@ class Product:
         self.active = False
 
     def show(self):
-        print(f"{self.name}, Price: {self.price}, Quantity: {self.quantity}")
+        print(f"{self.name}, Price: ${self.price:,.2f}, Quantity: {self.quantity:,.0f}")
 
     def buy(self, quantity):
         if quantity <= 0:

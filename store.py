@@ -2,7 +2,12 @@ import products
 
 
 class Store:
-    def __init__(self, product_list):
+    """
+    The store class that holds all products and allows the user to
+    add, remove, and order products
+    """
+    def __init__(self, store_name, product_list):
+        self.name = store_name
         self.product_list = product_list
 
     def add_product(self, product):
@@ -41,7 +46,7 @@ def main():
                     products.Product("Google Pixel 7", price=500, quantity=250),
                     ]
 
-    best_buy = Store(product_list)
+    best_buy = Store("Best Buy", product_list)
     all_products = best_buy.get_all_products()
 
     print("Available products\n--------------------------")
