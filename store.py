@@ -1,10 +1,10 @@
 import products
-
+import cart
 
 class Store:
     """
-    The store class that holds all products and allows the user to
-    add, remove, and order products
+    The store class that holds all products
+    It allows the user to add, remove, and order products
     """
     def __init__(self, store_name, product_list):
         self.name = store_name
@@ -25,10 +25,9 @@ class Store:
     def get_all_products(self):
         return [product for product in self.product_list if product.is_active()]
 
-    def order(self, shopping_list):
+    def order(self, cart):
         total_amount = 0
-        for position in shopping_list:
-            product, quantity = position
+        for product, quantity in cart.products.items():
             if product not in self.get_all_products():
                 raise ValueError(f"{product.name}: Product not available")
             if quantity <= 0:

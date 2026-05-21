@@ -1,5 +1,13 @@
 import products
 import store
+import cart
+
+
+def show_error(message):
+    """
+    prints an error message after an exception catching
+    """
+    print(f"######>{message}")
 
 
 def print_menu(menu):
@@ -20,30 +28,10 @@ def list_products(best_buy):
     """
     print("\n------")
     enumerated_products = enumerate(best_buy.get_all_products(), start=1)
-    for no, product in enumerated_products:
-        print(f"{no}: ", end="")
+    for number, product in enumerated_products:
+        print(f"{number}: ", end="")
         product.show()
     print("------")
-
-
-def get_order_product(best_buy):
-    """
-    prompts the user to select a product from the previously listed products
-    :param best_buy: Store object
-    :return: product of Class Product or None if the user entered empty text
-    """
-    all_products = best_buy.get_all_products()
-    while True:
-        no = input("\nWhich product # do you want (Enter empty text to view cart)? ")
-        try:
-            if no == "":
-                return None
-            product_list_index = int(no)
-            if product_list_index < 1 or product_list_index > len(all_products):
-                raise ValueError
-            return all_products[product_list_index-1]
-        except ValueError:
-            print("Invalid input. Try again.")
 
 
 def get_order_quantity():
@@ -62,37 +50,27 @@ def get_order_quantity():
             print("Invalid input. Try again.")
 
 
-def add_product_to_cart(product, shopping_list):
+def get_order(best_buy):
     """
-    adds a product to the shopping list (cart) and adjusts the quantity if already in cart
-    :param product: product to be added to the cart
-    :param shopping_list: the shopping list (cart)
-    :return: shopping list (cart) with the new or adjusted product
+    prompts the user to select a product from the previously listed products
+    :param best_buy: Store object
+    :return: product of Class Product or None if the user entered empty text
     """
-    cart_quantity = 0
-    item = None
+    all_products = best_buy.get_all_products()
+    while True:
+        choice = input("\nWhich product # do you want (<Enter> to view cart)? ")
+        try:
+            if choice == "":
+                return None, 0
+            product_number = int(choice)
+            if product_number < 1 or product_number > len(all_products):
+                raise ValueError("Invalid input. Try again.")
+            product = all_products[product_number - 1]
+            quantity = get_order_quantity()
+            return product, quantity
 
-    # check if the product is already in the cart
-    for item in shopping_list:
-        if item[0] == product:
-            cart_quantity = item[1]
-
-    quantity = get_order_quantity()
-    if quantity < 0 and abs(quantity) > cart_quantity:
-        print(f"{product.name}: Your cart only holds {cart_quantity:.0f} articles - you cannot order less.")
-        return shopping_list
-    elif quantity > product.get_quantity():
-        print(f"Sorry, we only have {product.get_quantity():,.0f} in stock.")
-        return shopping_list
-    elif cart_quantity > 0: # already in cart - adjust quantity
-        quantity += cart_quantity
-        shopping_list.remove(item)
-    if quantity != 0:
-        shopping_list.append((product, quantity))
-        print(f"{product.name}: {quantity:,.0f} are now in your cart!")
-    else:
-        print(f"{product.name}: Removed from cart")
-    return shopping_list
+        except ValueError as e:
+            show_error(e)
 
 
 def order(best_buy):
@@ -102,34 +80,32 @@ def order(best_buy):
     The user can then proceed to the checkout or continue adding products to the cart
     :param best_buy: Store object
     """
-    list_products(best_buy)
-    shopping_list = []
+    shopping_cart = cart.Cart()
     while True:
-        product = get_order_product(best_buy)
+        list_products(best_buy)
+        product, quantity = get_order(best_buy)
         if product is not None:
-            shopping_list = add_product_to_cart(product, shopping_list)
+            try:
+                shopping_cart.add_product(product, quantity)
+            except ValueError as e:
+                show_error(e)
+
         else: # empty user choice, go to cart
-            if len(shopping_list) == 0:
-                print("\n*** Your cart is empty!")
+            shopping_cart.show()
+            if shopping_cart.is_empty():
                 break
 
-            # show cart
-            print("\n*** Your cart")
-            total_price = 0
-            for product, quantity in shopping_list:
-                total_price += product.get_price() * quantity
-                print(f"{product.name}: {quantity:,.0f}")
-            print(f"Total price: ${total_price:,.2f}")
+            print(f"Total price: ${shopping_cart.get_total_price():,.2f}")
             if input("\nProceed to checkout (y/n)? ") != 'y':
                 continue
 
             # checkout
             try:
-                total_price = best_buy.order(shopping_list)
+                total_price = best_buy.order(shopping_cart)
                 print("********")
                 print(f"Order made! Total payment: ${total_price:,.2f}")
             except ValueError as e:
-                print(e)
+                show_error(e)
             break
 
 
@@ -179,7 +155,7 @@ def start(best_buy):
 def main():
     # initial stock of inventory
     product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
-                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=5000),
+                    products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
                     products.Product("Google Pixel 7", price=500, quantity=250)
                     ]
 
