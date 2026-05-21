@@ -33,7 +33,7 @@ class Store:
             if quantity <= 0:
                 raise ValueError(f"{product.name}: Quantity must be greater than 0")
             if quantity > product.get_quantity():
-                raise ValueError(f"{product.name}: {quantity} exceeds the maximum quantity of {product.get_quantity()}")
+                raise ValueError(f"{product.name}: {quantity:,.0f} exceeds the maximum quantity of {product.get_quantity():,.0f}")
             total_amount += product.buy(quantity)
         return total_amount
 

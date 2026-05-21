@@ -26,7 +26,7 @@ class Cart:
 
         # check if the quantity in stock is enough
         if quantity > product.get_quantity():
-            raise ValueError(f"{product.name}: {quantity} exceeds the maximum quantity of {product.get_quantity()}")
+            raise ValueError(f"{product.name}: {quantity:,.0f} exceeds the maximum quantity of {product.get_quantity():,.0f}")
 
         # remove product if quantity is 0
         if quantity == 0 and product in self.products:
@@ -43,7 +43,7 @@ class Cart:
 
         print("\n*** Your cart:")
         for product, quantity in self.products.items():
-            print(f"{product.name}: ${product.price:,.2f}, Quantity: {quantity:,.0f}")
+            print(f"{quantity:,.0f} {product.name} (${product.price:,.2f}) = ${product.price * quantity:,.2f}")
 
     def get_total_price(self):
         total_price = 0

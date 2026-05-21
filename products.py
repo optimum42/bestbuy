@@ -46,7 +46,7 @@ class Product:
         if quantity <= 0:
             raise ValueError(f"{self.name}: Quantity must be greater than 0")
         if quantity > self.quantity:
-            raise ValueError(f"{self.name}: {quantity} exceeds the maximum quantity of {self.quantity}")
+            raise ValueError(f"{self.name}: {quantity:,.0f} exceeds the maximum quantity of {self.quantity:,.0f}")
 
         self.quantity -= quantity
         if self.quantity == 0:

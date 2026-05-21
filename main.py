@@ -95,7 +95,7 @@ def order(best_buy):
             if shopping_cart.is_empty():
                 break
 
-            print(f"Total price: ${shopping_cart.get_total_price():,.2f}")
+            print(f"--- Total price: ${shopping_cart.get_total_price():,.2f}")
             if input("\nProceed to checkout (y/n)? ") != 'y':
                 continue
 
@@ -161,6 +161,21 @@ def main():
 
     # create the store object
     best_buy = store.Store("Best Buy", product_list)
+
+    # print a welcome message
+    print(f"\n        Welcome to {best_buy.name} store!")
+    print("        ==========================")
+    print("""
+        This is a simple CLI store application.
+        
+        You can list products, show the total amount in store, or make an order.
+        To make an order, enter '3'.
+            To add a product to the cart, enter the product number followed by the quantity.
+            To remove a product from the cart, enter the product number followed by a negative quantity.
+            You can also view the cart by entering an empty line.
+            To proceed to checkout, enter 'y' and press Enter.
+        To quit the program, enter '4'.
+    """)
 
     # run the main loop
     start(best_buy)
